@@ -3,7 +3,7 @@
     using CinemaApp.Services.Core.Interfaces;
     using CinemaApp.Web.ViewModels.Movie;
     using Microsoft.AspNetCore.Mvc;
-
+    using static ViewModels.ValidationMessages.Movie;
     public class MovieController : Controller
     {
         private readonly IMovieService _movieService;
@@ -19,6 +19,30 @@
                 = await _movieService.GetAllMoviesAsync();
 
             return View(allMovies);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Add()
+        {
+            return this.View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Add(MovieFormInputModel inputModel)
+        {
+            if (!this.ModelState.IsValid) return this.View(inputModel);
+
+            try
+            {
+                await this._movieService.AddMovieAsync(inputModel);
+                return this.RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                this.ModelState.AddModelError(string.Empty, ServiceCreateError);
+                return this.View(inputModel);
+            }
         }
     }
 }
