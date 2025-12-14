@@ -35,6 +35,9 @@ namespace CinemaApp.Web.ViewModels
 
             public const string ImageUrlMaxLengthMessage = "Image URL cannot exceed 2048 characters.";
 
+            public const string ServiceCreateError
+                = "Fatal error occurred while adding your movie! Please try again later!";
+
         }
     }
 }

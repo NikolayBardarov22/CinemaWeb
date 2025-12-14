@@ -3,6 +3,7 @@
     using Microsoft.EntityFrameworkCore;
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
@@ -29,9 +30,12 @@
         public int Duration { get; set; }
 
         [Comment("Movie description")]
+        [MaxLength(1000)]
+        [MinLength(1)]
         public string Description { get; set; } = null!;
 
         [Comment("Movie image url from the image store")]
+        [MaxLength(1000)]
         public string? ImageUrl { get; set; }
 
         //Extract the propertyBaseDeleteableModel

@@ -31,7 +31,6 @@
         public async Task<IActionResult> Add(MovieFormInputModel inputModel)
         {
             if (!this.ModelState.IsValid) return this.View(inputModel);
-
             try
             {
                 await this._movieService.AddMovieAsync(inputModel);

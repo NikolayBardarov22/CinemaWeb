@@ -50,6 +50,11 @@
                     ImageUrl = m.ImageUrl
                 })
                 .ToArrayAsync();
+            foreach (AllMoviesIndexViewModel movie in allMovies)
+            {
+                if (String.IsNullOrEmpty(movie.ImageUrl))
+                    movie.ImageUrl = $"~/images/{NoImageUrl}.jpg";
+            }
             return allMovies;
         }
     }
