@@ -10,6 +10,9 @@
         {
             this.ReleaseDate = DateTime.UtcNow.ToString(DateFormat);
         }
+        //Id does not have validation \, since the model is shared between Add and Edit
+        //Id will be validated in the corresponding Service methood
+        public string Id { get; set; }  =string.Empty;
 
         [Required(ErrorMessage = TitleRequiredMessage)]
         [MinLength(TitleMinLength, ErrorMessage = TitleMinLengthMessage)]

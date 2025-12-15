@@ -12,5 +12,7 @@ namespace CinemaApp.Services.Core.Interfaces
         Task<IEnumerable<AllMoviesIndexViewModel>> GetAllMoviesAsync();
         Task AddMovieAsync(MovieFormInputModel model);
         Task<MovieDetailsViewModel> GetMovieDatilsByIdAsync(string? id);
+        Task<MovieFormInputModel?> GetEditableMovieByIdAsync(string? id);
+        Task<bool> EditMovieAsync(MovieFormInputModel inputModel);
     }
 }
