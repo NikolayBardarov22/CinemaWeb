@@ -57,5 +57,33 @@
             }
             return allMovies;
         }
+
+        public async Task<MovieDetailsViewModel> GetMovieDatilsByIdAsync(string? id)
+        {
+            MovieDetailsViewModel? movieDetails = null;
+
+            bool isValidGuid = Guid.TryParse(id, out Guid movieId);
+
+            if (isValidGuid)
+            {
+                movieDetails = await this._dbContext
+                    .Movies
+                    .AsNoTracking()
+                    .Where(m => m.Id == movieId)
+                    .Select(m => new MovieDetailsViewModel
+                    {
+                        Id = m.Id.ToString(),
+                        Description = m.Description,
+                        Director = m.Director,
+                        Duration = m.Duration,
+                        ImageUrl = m.ImageUrl != null ? m.ImageUrl : $"~/images/{NoImageUrl}.jpg",
+                        Genre = m.Genre,
+                        ReleaseDate = m.ReleaseDate.ToString(DateFormat),
+                        Title = m.Title
+                    })
+                    .SingleOrDefaultAsync();
+            }
+            return movieDetails;
+        }
     }
 }
