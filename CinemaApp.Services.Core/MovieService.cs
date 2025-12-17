@@ -35,11 +35,9 @@
             await this._dbContext.Movies.AddAsync(movie);
             await this._dbContext.SaveChangesAsync();
         }
-
         public async Task<bool> EditMovieAsync(MovieFormInputModel inputModel)
         {
-            Movie? editableMovie = await this._dbContext.Movies
-                .SingleOrDefaultAsync(m => m.Id.ToString() == inputModel.Id);
+            Movie? editableMovie = await this.FindMovieByStringId(inputModel.Id);
 
             if (editableMovie == null) { return false; }
 
@@ -135,6 +133,59 @@
                     .SingleOrDefaultAsync();
             }
             return movieDetails;
+        }
+        //TODO To be investigated when relations to Movie entity are introduced
+        public async Task<bool> DeleteMovieAsync(string? id)
+        {
+            Movie? movieToDelete = await this.FindMovieByStringId(id);
+
+            if (movieToDelete == null) { return false; }
+
+            this._dbContext.Movies.Remove(movieToDelete);
+            await this._dbContext.SaveChangesAsync();
+            return true;
+        }
+        public async Task<DeleteMovieViewModel> GetMovieDeleteDetailsByIdAsync(string? id)
+        {
+            DeleteMovieViewModel? deleteMovieViewModel = null;
+            Movie? movieToDelete = await this.FindMovieByStringId(id);
+
+            if (movieToDelete != null)
+            {
+                deleteMovieViewModel = new DeleteMovieViewModel()
+                {
+                    Id = movieToDelete.Id.ToString(),
+                    Title = movieToDelete.Title,
+                    ImageUrl = movieToDelete.ImageUrl ?? $"~/images/{NoImageUrl}.jpg"
+                };
+            }
+            return deleteMovieViewModel;
+        }
+        public async Task<bool> SoftDeleteMovieAsync(string? id)
+        {
+            Movie? movieToDelete = await this.FindMovieByStringId(id);
+
+            if (movieToDelete == null) { return false; }
+
+            movieToDelete.IsDeleted = true;
+            await this._dbContext.SaveChangesAsync();
+            return true;
+        }
+        //TODO: Implement as generic methood in BaseService
+        private async Task<Movie?> FindMovieByStringId(string? id)
+        {
+            Movie? movie = null;
+
+            if (!String.IsNullOrWhiteSpace(id))
+            {
+                bool isGuidValid = Guid.TryParse(id, out Guid movieGuid);
+
+                if (isGuidValid)
+                {
+                    movie = await this._dbContext.Movies.FindAsync(movieGuid);
+                }
+            }
+            return movie;
         }
     }
 }

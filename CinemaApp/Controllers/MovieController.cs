@@ -48,13 +48,13 @@
         {
             try
             {
-                MovieDetailsViewModel? movieDetails = await this._movieService.GetMovieDatilsByIdAsync(id);
-                if (movieDetails == null)
+                DeleteMovieViewModel? movieToBeDeleted = await this._movieService.GetMovieDeleteDetailsByIdAsync(id);
+                if (movieToBeDeleted == null)
                 {
                     //TODO Custom 404 page
                     return this.RedirectToAction(nameof(Index));
                 }
-                return this.View(movieDetails);
+                return this.View(movieToBeDeleted);
             }
             catch (Exception e)
             {
@@ -104,6 +104,51 @@
                 //TODO Implement it with ILogger
                 //Add JS bars to indicate such errors
                 Console.WriteLine(e.Message);
+                return this.RedirectToAction(nameof(Index));
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Delete(String? id)
+        {
+            try
+            {
+                DeleteMovieViewModel? movieDetails = await this._movieService.GetMovieDeleteDetailsByIdAsync(id);
+                if (movieDetails == null)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+                return this.View(movieDetails);
+            }
+            catch (Exception ex)
+            {
+                //TODO Implement it with ILogger
+                //Add JS bars to indicate such errors
+                Console.WriteLine(ex.Message);
+                return this.RedirectToAction(nameof(Index));
+            }
+        }
+        [HttpPost]
+        public async Task<IActionResult> Delete(DeleteMovieViewModel inputModel)
+        {
+            try
+            {
+                if (!this.ModelState.IsValid) return this.View(inputModel);
+
+                bool deleteResult = await this._movieService.SoftDeleteMovieAsync(inputModel.Id);
+                if (deleteResult == false)
+                {
+                    //TODO: Implement JS notification
+                    return this.RedirectToAction(nameof(Index));
+                }
+                //TODO: Success notification
+                return this.RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                //TODO Implement it with ILogger
+                //Add JS bars to indicate such errors
+                Console.WriteLine(ex.Message);
                 return this.RedirectToAction(nameof(Index));
             }
         }
