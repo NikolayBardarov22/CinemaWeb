@@ -40,5 +40,8 @@
 
         //Extract the propertyBaseDeleteableModel
         public bool IsDeleted { get; set; }
+
+        public virtual ICollection<ApplicationUserMovie> MovieWatchlists { get; set; }
+        = new HashSet<ApplicationUserMovie>();
     }
 }
