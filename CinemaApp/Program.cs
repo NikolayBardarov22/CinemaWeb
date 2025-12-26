@@ -35,10 +35,11 @@ namespace CinemaApp.Web
                 options.Password.RequiredUniqueChars = 0;
 
             })
-                .AddEntityFrameworkStores<CinemaAppDbContext>();
+                .AddEntityFrameworkStores<CinemaAppDbContext>(); 
 
             builder.Services.AddControllersWithViews();
             builder.Services.AddScoped<IMovieService, MovieService>();
+            builder.Services.AddScoped<IWatchlistService, WatchlistService>();
 
             WebApplication app = builder.Build();
 

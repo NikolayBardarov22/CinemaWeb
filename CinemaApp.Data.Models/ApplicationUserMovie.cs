@@ -1,14 +1,15 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-namespace CinemaApp.Data.Models
+﻿namespace CinemaApp.Data.Models
 {
-    using Microsoft.EntityFrameworkCore;
+    using Microsoft.AspNetCore.Identity;
+    using System;
+    using System.Collections.Generic;
+    using Microsoft.EntityFrameworkCore;            
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
+
     [Comment("Movie in the system")]
     public class ApplicationUserMovie
     {

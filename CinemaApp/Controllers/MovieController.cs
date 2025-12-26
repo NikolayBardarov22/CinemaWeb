@@ -2,22 +2,33 @@
 {
     using CinemaApp.Services.Core.Interfaces;
     using CinemaApp.Web.ViewModels.Movie;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using static ViewModels.ValidationMessages.Movie;
-    public class MovieController : Controller
+    public class MovieController : BaseController
     {
         private readonly IMovieService _movieService;
-        public MovieController(IMovieService movieService)
+        private readonly IWatchlistService _watchlistService;
+        public MovieController(IMovieService movieService, IWatchlistService watchlistService)
         {
             this._movieService = movieService;
+            this._watchlistService = watchlistService;
         }
-
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            IEnumerable<AllMoviesIndexViewModel> allMovies
-                = await _movieService.GetAllMoviesAsync();
+            IEnumerable<AllMoviesIndexViewModel> allMovies = await _movieService.GetAllMoviesAsync();
 
+            if (this.IsUserAutenticated())
+            {
+                foreach (AllMoviesIndexViewModel moviesIndexViewModel in allMovies)
+                { 
+                    moviesIndexViewModel.IsAddedToUserWatchlist
+                        = await this._watchlistService
+                        .IsMovieAddedToTheWatchlist(moviesIndexViewModel.Id, this.GetUserId());
+                }
+            }
             return View(allMovies);
         }
 
@@ -43,18 +54,20 @@
                 return this.View(inputModel);
             }
         }
+
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> Details(String? id)
         {
             try
             {
-                DeleteMovieViewModel? movieToBeDeleted = await this._movieService.GetMovieDeleteDetailsByIdAsync(id);
-                if (movieToBeDeleted == null)
+                MovieDetailsViewModel? movieDetails = await this._movieService.GetMovieDatilsByIdAsync(id);
+                if (movieDetails == null)
                 {
                     //TODO Custom 404 page
                     return this.RedirectToAction(nameof(Index));
                 }
-                return this.View(movieToBeDeleted);
+                return this.View(movieDetails);
             }
             catch (Exception e)
             {

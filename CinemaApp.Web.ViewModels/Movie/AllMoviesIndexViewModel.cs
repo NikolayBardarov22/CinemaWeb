@@ -14,5 +14,6 @@ namespace CinemaApp.Web.ViewModels.Movie
         public string ReleaseDate { get; set; } = null!;
         public string Director { get; set; } = null!;
         public string? ImageUrl { get; set; }
+        public bool IsAddedToUserWatchlist { get; set; }
     }
 }
